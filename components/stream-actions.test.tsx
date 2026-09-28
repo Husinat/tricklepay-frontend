@@ -4,12 +4,23 @@ import type { StreamView } from "@/types/stream";
 
 import { StreamActions, canSenderCancel } from "./stream-actions";
 
-const stream = {
+const stream: StreamView = {
   id: "1",
   sender: "G-SENDER",
   recipient: "G-RECIPIENT",
+  token: "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+  totalAmount: "10000000",
+  withdrawn: "0",
+  vested: "5000000",
+  withdrawable: "5000000",
+  locked: "5000000",
+  startTime: "1700000000",
+  endTime: "1700003600",
+  cliffTime: "1700000000",
+  cancelled: false,
   status: "streaming",
-} as StreamView;
+  progress: 5000,
+};
 
 describe("canSenderCancel", () => {
   it("allows the sender to cancel an active stream", () => {
@@ -79,7 +90,8 @@ describe("StreamActions component rendering", () => {
     const children = element!.props.children;
     // The cancel control is rendered because canCancel is true
     const hasCancelControl = children.some(
-      (child: any) => child && child.type && child.type.name === "CancelStreamControl"
+      (child: { type?: { name?: string } } | null | undefined) =>
+        Boolean(child?.type && child.type.name === "CancelStreamControl"),
     );
     expect(hasCancelControl).toBe(true);
   });
@@ -91,8 +103,14 @@ describe("StreamActions component rendering", () => {
     const children = element!.props.children;
     // The cancel control should be absent
     const hasCancelControl = children.some(
-      (child: any) => child && child.type && child.type.name === "CancelStreamControl"
+      (child: { type?: { name?: string } } | null | undefined) =>
+        Boolean(child?.type && child.type.name === "CancelStreamControl"),
     );
     expect(hasCancelControl).toBe(false);
+  });
+
+  it("renders nothing (no action controls) when caller is an unrelated third-party wallet", () => {
+    const element = StreamActions({ stream, walletAddress: "GTHIRD_PARTY_UNRELATED_ADDRESS", onComplete: vi.fn() });
+    expect(element).toBeNull();
   });
 });

@@ -20,7 +20,7 @@ describe("CreateStreamFields", () => {
       start: { current: null },
       end: { current: null },
       cliff: { current: null },
-    } as any,
+    } as unknown as Record<string, React.RefObject<HTMLInputElement | null>>,
     onFieldChange: vi.fn(),
     previewRate: null,
     previewDuration: null,

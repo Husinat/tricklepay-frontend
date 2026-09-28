@@ -83,6 +83,8 @@ function mockConnectedWithData() {
         status: "streaming",
         progress: 0,
       } as StreamView,
+        withdrawnAmount: 0n,
+      } as unknown as import("@/types/stream").StreamView,
     ],
     total: 1,
     loading: false,
