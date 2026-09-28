@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import { useAccrual } from "@/hooks/use-accrual";
 import { parseHumanAmount, withdrawalAmountError } from "@/lib/amount";
 import { cancel, withdraw, withdrawAmount, confirmTransaction, TransactionTimeoutError } from "@/lib/contract";
+import {
+  TX_CONFIRMATION_TIMED_OUT_AGAIN_MESSAGE,
+  TX_CONFIRMATION_TIMED_OUT_SUBMITTED_MESSAGE,
+  TX_FAILED_CANCEL_MESSAGE,
+  TX_FAILED_CONFIRM_MESSAGE,
+  TX_FAILED_WITHDRAW_MESSAGE,
+} from "@/lib/contract-messages";
 import { formatAmount } from "@/lib/format";
 import type { TxStage } from "@/types/contract";
 import type { StreamView } from "@/types/stream";
@@ -140,9 +147,9 @@ export function useStreamActions(
     } catch (err) {
       if (err instanceof TransactionTimeoutError) {
         setTimeoutHash(err.txHash);
-        setError("Confirmation timed out. The transaction was submitted to the network.");
+        setError(TX_CONFIRMATION_TIMED_OUT_SUBMITTED_MESSAGE);
       } else {
-        setError(err instanceof Error ? err.message : "Failed to withdraw.");
+        setError(err instanceof Error ? err.message : TX_FAILED_WITHDRAW_MESSAGE);
       }
     } finally {
       setBusy(null);
@@ -164,9 +171,9 @@ export function useStreamActions(
     } catch (err) {
       if (err instanceof TransactionTimeoutError) {
         setTimeoutHash(err.txHash);
-        setError("Confirmation timed out. The transaction was submitted to the network.");
+        setError(TX_CONFIRMATION_TIMED_OUT_SUBMITTED_MESSAGE);
       } else {
-        setError(err instanceof Error ? err.message : "Failed to cancel.");
+        setError(err instanceof Error ? err.message : TX_FAILED_CANCEL_MESSAGE);
       }
     } finally {
       setBusy(null);
@@ -187,9 +194,9 @@ export function useStreamActions(
       onComplete();
     } catch (err) {
       if (err instanceof TransactionTimeoutError) {
-        setError("Confirmation timed out again. Check explorer or try again later.");
+        setError(TX_CONFIRMATION_TIMED_OUT_AGAIN_MESSAGE);
       } else {
-        setError(err instanceof Error ? err.message : "Failed to confirm transaction.");
+        setError(err instanceof Error ? err.message : TX_FAILED_CONFIRM_MESSAGE);
       }
     } finally {
       setBusy(null);

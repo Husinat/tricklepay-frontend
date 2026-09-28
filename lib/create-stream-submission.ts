@@ -1,4 +1,8 @@
 import { createStream, TransactionTimeoutError } from "@/lib/contract";
+import {
+  TX_CONFIRMATION_TIMED_OUT_SUBMITTED_MESSAGE,
+  TX_FAILED_CREATE_MESSAGE,
+} from "@/lib/contract-messages";
 import type { CreateStreamParams, TxStage } from "@/types/contract";
 
 /**
@@ -18,6 +22,7 @@ export type CreateStreamSubmission =
  * Kept free of React so it can be exercised in a test by mocking
  * lib/contract's createStream, independent of useCreateStreamForm's state
  * wiring (which needs a live wallet/router/network-guard context to render).
+ * Wording lives in lib/contract-messages.ts; this only selects which one fits.
  */
 export async function submitCreateStream(
   params: CreateStreamParams,
@@ -31,9 +36,9 @@ export async function submitCreateStream(
       return {
         ok: false,
         timeoutHash: err.txHash,
-        message: "Confirmation timed out. The transaction was submitted to the network.",
+        message: TX_CONFIRMATION_TIMED_OUT_SUBMITTED_MESSAGE,
       };
     }
-    return { ok: false, message: err instanceof Error ? err.message : "Failed to create stream." };
+    return { ok: false, message: err instanceof Error ? err.message : TX_FAILED_CREATE_MESSAGE };
   }
 }

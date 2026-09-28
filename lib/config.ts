@@ -72,7 +72,7 @@ export const config = {
   /**
    * Milliseconds a backend read API request may take before it is aborted.
    * 0 means no timeout. Applies to lib/api.ts only — on-chain transactions
-   * have their own confirmation polling budget in lib/contract.ts.
+   * have their own confirmation polling budget in lib/contract-config.ts.
    */
   apiTimeoutMs: readApiTimeout(),
 };

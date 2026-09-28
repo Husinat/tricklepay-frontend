@@ -7,6 +7,11 @@ import { useWallet } from "@/components/wallet-provider";
 import { useFormNavigationWarning } from "@/hooks/use-form-navigation-warning";
 import { useNetworkGuard } from "@/hooks/use-network-guard";
 import { confirmTransaction, TransactionTimeoutError } from "@/lib/contract";
+import {
+  TX_CONFIRMATION_TIMED_OUT_AGAIN_MESSAGE,
+  TX_FAILED_CONFIRM_MESSAGE,
+  wrongNetworkMessage,
+} from "@/lib/contract-messages";
 import { clearFormDraft, EMPTY_FORM_DRAFT, readFormDraft, writeFormDraft } from "@/lib/create-form-draft";
 import { submitCreateStream } from "@/lib/create-stream-submission";
 import {
@@ -170,7 +175,7 @@ export function useCreateStreamForm(): CreateStreamForm {
 
     if (mismatch) {
       setError(
-        `Wrong network: wallet is on ${walletNetwork ?? "unknown"}, app expects ${expectedNetwork}. Switch networks in Freighter.`,
+        wrongNetworkMessage(walletNetwork ?? "unknown", expectedNetwork),
       );
       return;
     }
@@ -238,9 +243,9 @@ export function useCreateStreamForm(): CreateStreamForm {
       router.push("/");
     } catch (err) {
       if (err instanceof TransactionTimeoutError) {
-        setError("Confirmation timed out again. Check explorer or try again later.");
+        setError(TX_CONFIRMATION_TIMED_OUT_AGAIN_MESSAGE);
       } else {
-        setError(err instanceof Error ? err.message : "Failed to confirm transaction.");
+        setError(err instanceof Error ? err.message : TX_FAILED_CONFIRM_MESSAGE);
       }
     } finally {
       setSubmitting(false);

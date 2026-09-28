@@ -10,6 +10,7 @@ import { useStreamActions } from "@/hooks/use-stream-actions";
 import { config } from "@/lib/config";
 import { txExplorerUrl } from "@/lib/explorer";
 import { blockedReason, canSenderCancel } from "@/lib/stream-actions";
+import { isStreamRecipient } from "@/lib/stream-role";
 import type { StreamView } from "@/types/stream";
 
 export { canSenderCancel };
@@ -30,7 +31,7 @@ export function StreamActions({ stream, walletAddress, onComplete }: Props): JSX
 
   if (!walletAddress) return null;
 
-  const isRecipient = walletAddress === stream.recipient;
+  const isRecipient = isStreamRecipient(stream, walletAddress);
   const canCancel = canSenderCancel(stream, walletAddress);
 
   if (!isRecipient && !canCancel) return null;
