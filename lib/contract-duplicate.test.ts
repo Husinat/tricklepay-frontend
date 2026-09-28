@@ -1,14 +1,13 @@
+import { getNetwork } from "@stellar/freighter-api";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+import { createStream, isTransactionPending } from "@/lib/contract";
+import type { CreateStreamParams } from "@/types/contract";
 
 vi.mock("@stellar/freighter-api", () => ({
   getNetwork: vi.fn(),
   signTransaction: vi.fn(),
 }));
-
-import { getNetwork } from "@stellar/freighter-api";
-
-import { createStream, isTransactionPending } from "@/lib/contract";
-import type { CreateStreamParams } from "@/types/contract";
 
 const PARAMS: CreateStreamParams = {
   sender: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN7",

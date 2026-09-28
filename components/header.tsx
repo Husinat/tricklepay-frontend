@@ -32,15 +32,23 @@ export function Header(): JSX.Element {
 
         {/* Desktop nav links (hidden on mobile) */}
         <nav aria-label="Main navigation" className="hidden items-center gap-6 sm:flex">
-          {NAV_LINKS.filter((l) => l.href !== "/").map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-neutral-400 hover:text-neutral-100"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.filter((l) => l.href !== "/").map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isActive ? "page" : undefined}
+                className={`text-sm transition-colors ${
+                  isActive
+                    ? "font-medium text-neutral-100"
+                    : "text-neutral-400 hover:text-neutral-100"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right side: theme toggle + wallet + hamburger */}
@@ -99,20 +107,24 @@ export function Header(): JSX.Element {
           className="border-t border-neutral-800 sm:hidden"
         >
           <ul className="mx-auto max-w-4xl space-y-1 px-6 py-3">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`block rounded px-3 py-2 text-sm transition-colors ${
-                    pathname === link.href
-                      ? "bg-neutral-800 text-neutral-100"
-                      : "text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-100"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`block rounded px-3 py-2 text-sm transition-colors ${
+                      isActive
+                        ? "bg-neutral-800 text-neutral-100"
+                        : "text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-100"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       )}

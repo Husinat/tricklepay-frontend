@@ -42,7 +42,7 @@ describe("useFormNavigationWarning", () => {
 
   it("uses the default warning message", () => {
     let registeredHandler: ((e: BeforeUnloadEvent) => void) | undefined;
-    addSpy.mockImplementation((_type, handler) => {
+    addSpy.mockImplementation((_type: string, handler: unknown) => {
       registeredHandler = handler as (e: BeforeUnloadEvent) => void;
     });
 
@@ -58,7 +58,7 @@ describe("useFormNavigationWarning", () => {
 
   it("uses a supplied custom message instead of the default", () => {
     let registeredHandler: ((e: BeforeUnloadEvent) => void) | undefined;
-    addSpy.mockImplementation((_type, handler) => {
+    addSpy.mockImplementation((_type: string, handler: unknown) => {
       registeredHandler = handler as (e: BeforeUnloadEvent) => void;
     });
 
