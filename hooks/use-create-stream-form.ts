@@ -71,6 +71,9 @@ export function useCreateStreamForm(): CreateStreamForm {
   const router = useRouter();
 
   const [values, setValues] = useState<FormDraft>(() => readFormDraft() ?? EMPTY_FORM_DRAFT);
+  // True when the form was initialised from a persisted draft, so the
+  // navigation warning can tell the user their work is safe in storage.
+  const [restoredFromDraft] = useState(() => readFormDraft() !== null);
   const [errors, setErrors] = useState<CreateFormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [stage, setStage] = useState<TxStage | null>(null);
@@ -155,7 +158,14 @@ export function useCreateStreamForm(): CreateStreamForm {
     prepared !== null ||
     Object.values(values).some((value) => value.trim().length > 0);
 
-  useFormNavigationWarning(hasUnsavedChanges && !submitting, "You have unsaved changes in this stream form. Leaving now will discard them.");
+  // When the form was populated from a stored draft, let the user know that
+  // their work is safe: the draft stays in storage even if they navigate away.
+  // A form with fresh (non-draft) edits warns that changes will be discarded.
+  const navigationMessage = restoredFromDraft
+    ? "You have a restored draft. Your progress is saved and will be here when you return."
+    : "You have unsaved changes in this stream form. Leaving now will discard them.";
+
+  useFormNavigationWarning(hasUnsavedChanges && !submitting, navigationMessage);
   useEffect(() => {
     const draft = { recipient, token, amount, start, end, cliff };
     const hasAnyValue = Object.values(draft).some((value) => value.trim().length > 0);
