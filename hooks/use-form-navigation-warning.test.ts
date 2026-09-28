@@ -1,4 +1,7 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
+/* @vitest-environment jsdom */
+
+import { useEffect } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Execute useEffect synchronously so the hook's addEventListener /
 // removeEventListener calls happen inline, without a React tree or jsdom.
@@ -11,7 +14,6 @@ vi.mock("react", async (importOriginal) => {
   };
 });
 
-import { useEffect } from "react";
 import { useFormNavigationWarning } from "./use-form-navigation-warning";
 
 describe("useFormNavigationWarning", () => {
