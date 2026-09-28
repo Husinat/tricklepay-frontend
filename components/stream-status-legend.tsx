@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { STREAM_STATUS_META } from "@/lib/stream-status";
+import { STREAM_STATUS_COLORS, STREAM_STATUS_META } from "@/lib/stream-status";
 import type { StreamStatus } from "@/types/stream";
 
 /**
@@ -14,7 +14,8 @@ export function StreamStatusLegend(): JSX.Element {
       aria-label="Stream status legend"
     >
       {(Object.keys(STREAM_STATUS_META) as StreamStatus[]).map((status) => {
-        const { dot, label, description } = STREAM_STATUS_META[status];
+        const { label, description } = STREAM_STATUS_META[status];
+        const { dot } = STREAM_STATUS_COLORS[status];
         return (
         <div key={status} className="flex items-center gap-1.5">
           {/* Colour dot mirrors the badge hue used in StreamCard / StreamTable */}

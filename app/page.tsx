@@ -9,6 +9,7 @@ import { StreamList } from "@/components/stream-list";
 import { StreamStatusLegend } from "@/components/stream-status-legend";
 import { TransactionNotice } from "@/components/transaction-notice";
 import { useWallet } from "@/components/wallet-provider";
+import { useNow } from "@/hooks/use-now";
 import { useStreamPage, type StreamPage } from "@/hooks/use-stream-page";
 import { takePendingNotice } from "@/lib/pending-notice";
 import type { PendingNotice } from "@/types/notice";
@@ -38,6 +39,10 @@ function StreamSection({
   className?: string;
 }) {
   const visible = page.streams;
+  // Re-render on an interval so a pending stream's "starts in …" countdown
+  // in the lists keeps advancing while the absolute schedule stays on the
+  // detail page. Card/table rows themselves stay pure.
+  useNow();
   const emptyText =
     filter === "all" || page.streams.length === 0
       ? (filter === "all" ? emptyMessage : `No ${filter} streams found.`)

@@ -1,16 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type JSX, useEffect, useRef, useState } from "react";
+import { type JSX, type ReactNode, useEffect, useRef, useState } from "react";
 
 import { CopyButton, ShareLinkButton } from "@/components/copy-button";
 import { ProgressBar } from "@/components/progress-bar";
 import { StreamActions } from "@/components/stream-actions";
 import { StreamStatusBadge } from "@/components/stream-status-badge";
+import { TokenDisplay } from "@/components/token-display";
 import { useWallet } from "@/components/wallet-provider";
 import { useAccrual } from "@/hooks/use-accrual";
 import { useNow } from "@/hooks/use-now";
-import { formatTokenAmount, formatTokenDisplay, truncateAddress } from "@/lib/format";
+import { formatTokenAmount, truncateAddress } from "@/lib/format";
 import { formatSchedule, NO_CLIFF_LABEL } from "@/lib/schedule";
 import { resolvedTimeZoneLabel } from "@/lib/timezone";
 import type { StreamView } from "@/types/stream";
@@ -28,7 +29,7 @@ function Field({
   utc,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   mono?: boolean;
   copyValue?: string;
   countdown?: string;
@@ -153,7 +154,7 @@ export function StreamDetail({ stream, onComplete }: { stream: StreamView; onCom
       <dl className="grid grid-cols-2 gap-4 text-sm">
         <Field label="From" value={truncateAddress(stream.sender)} mono copyValue={stream.sender} />
         <Field label="To" value={truncateAddress(stream.recipient)} mono copyValue={stream.recipient} />
-        <Field label="Token" value={formatTokenDisplay(stream.token)} mono copyValue={stream.token} />
+        <Field label="Token" value={<TokenDisplay token={stream.token} />} mono copyValue={stream.token} />
         <Field label="Withdrawn" value={formatTokenAmount(stream.withdrawn, stream.token)} />
         <Field
           label={stream.status === "cancelled" ? "Returned to sender" : "Locked"}

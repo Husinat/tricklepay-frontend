@@ -66,11 +66,32 @@ function isActive(status: StreamStatus): boolean {
 }
 
 /**
- * How long until a stream ends ("ends in 2d 3h"), or `null` when it has
- * already completed or been cancelled and there is nothing left to count down.
+ * What a list row shows for a stream that hasn't finished: for a pending
+ * stream the time until it starts ("starts in 2d 3h"), otherwise the time
+ * until it ends ("ends in 2d 3h"). Returns `null` when it has already
+ * completed or been cancelled and there is nothing left to count down.
  * Lists show this in place of the schedule; the caller decides what to render
  * for `null` (the card shows nothing, the table a dash).
+ *
+ * `startTime` is optional so callers that only know the end time keep the
+ * previous ends-in wording; pass it for pending streams to get the
+ * starts-in wording the recipient actually wants before accrual begins.
  */
-export function formatRemaining(stream: { endTime: string; status: StreamStatus }): string | null {
-  return isActive(stream.status) ? timeRemaining(stream.endTime) : null;
+export function formatRemaining(stream: {
+  startTime?: string;
+  endTime: string;
+  status: StreamStatus;
+}): string | null {
+  if (!isActive(stream.status)) return null;
+  if (stream.status === "pending" && stream.startTime !== undefined) {
+    // A pending stream counts down to its start while that moment is still
+    // ahead — the figure a recipient wants before accrual begins. Once the
+    // start has passed (stale or inconsistent data), fall back to the
+    // ends-in wording so a row never flips to a bare "started" label.
+    const startMs = Number(String(stream.startTime)) * 1000;
+    if (Number.isFinite(startMs) && startMs > Date.now()) {
+      return relativeTime(String(stream.startTime), "starts");
+    }
+  }
+  return timeRemaining(stream.endTime);
 }
