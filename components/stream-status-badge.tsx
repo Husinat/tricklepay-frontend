@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 
-import { STREAM_STATUS_META } from "@/lib/stream-status";
+import { STREAM_STATUS_COLORS, STREAM_STATUS_META } from "@/lib/stream-status";
 import type { StreamStatus } from "@/types/stream";
 
 /**
@@ -39,11 +39,12 @@ export function StreamStatusBadge({
   }
 
   const meta = STREAM_STATUS_META[status];
+  const colors = STREAM_STATUS_COLORS[status];
   return (
     <span
       className={[
         "inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium capitalize",
-        meta.style,
+        colors.pill,
         className,
       ]
         .filter(Boolean)

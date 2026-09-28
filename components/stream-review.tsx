@@ -3,6 +3,7 @@
 import type { JSX, ReactNode } from "react";
 
 import { CopyButton } from "@/components/copy-button";
+import { TokenDisplay } from "@/components/token-display";
 import { formatDuration, formatTokenAmount, formatTokenRate, truncateAddress } from "@/lib/format";
 import { formatSchedule, NO_CLIFF_LABEL, type ScheduleMoment } from "@/lib/schedule";
 import { resolvedTimeZoneLabel } from "@/lib/timezone";
@@ -46,15 +47,32 @@ function AddressRow({ label, address }: { label: string; address: string }) {
   );
 }
 
+function TokenContractRow({ token }: { token: string }) {
+  return (
+    <Row label="Token contract">
+      <span className="inline-flex items-baseline gap-2">
+        <TokenDisplay token={token} />
+        <CopyButton value={token} label="token contract" />
+      </span>
+    </Row>
+  );
+}
+
 // A Start/End/Cliff row, with the UTC equivalent echoed underneath in muted
 // text — this is the last screen before signing, so it's the most
 // consequential place to remove any doubt about which instant a local time
-// actually resolves to.
+// actually resolves to. The countdown pill shows how long until the moment
+// while the absolute local + UTC times stay visible.
 function TimeRow({ label, moment }: { label: string; moment: ScheduleMoment }) {
   return (
     <Row label={label}>
       <div className="flex flex-col items-start gap-0.5 sm:items-end">
-        <span>{moment.local}</span>
+        <span className="inline-flex flex-wrap items-center gap-2">
+          <span>{moment.local}</span>
+          <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-[10px] font-normal leading-none text-neutral-400">
+            {moment.countdown}
+          </span>
+        </span>
         <span className="text-xs font-normal text-neutral-500">{moment.utc}</span>
       </div>
     </Row>
@@ -84,7 +102,7 @@ export function StreamReview({ params, submitting, onBack, onConfirm }: Props): 
         <dl className="divide-y divide-neutral-800">
           <AddressRow label="Sender" address={params.sender} />
           <AddressRow label="Recipient" address={params.recipient} />
-          <AddressRow label="Token contract" address={params.token} />
+          <TokenContractRow token={params.token} />
           <Row label="Amount">
             {formatTokenAmount(params.totalAmount.toString(), params.token)}
           </Row>
@@ -120,9 +138,10 @@ export function StreamReview({ params, submitting, onBack, onConfirm }: Props): 
           type="button"
           onClick={onConfirm}
           disabled={submitting}
+          aria-busy={submitting}
           className="rounded bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-200 disabled:opacity-50"
         >
-          Confirm &amp; create
+          {submitting ? "Creating…" : "Confirm & create"}
         </button>
       </div>
     </section>
