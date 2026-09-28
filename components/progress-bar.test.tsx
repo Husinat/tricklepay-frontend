@@ -17,6 +17,13 @@ describe("ProgressBar", () => {
     expect(inner.props.style.width).toBe("100%");
   });
 
+  it("renders mid-stream progress width matching the reported value", () => {
+    const element = ProgressBar({ value: 5000 });
+    expect(element.props["aria-valuenow"]).toBe(50);
+    const inner = element.props.children;
+    expect(inner.props.style.width).toBe("50%");
+  });
+
   it("clamps out-of-range values", () => {
     const negative = ProgressBar({ value: -500 });
     expect(negative.props["aria-valuenow"]).toBe(0);

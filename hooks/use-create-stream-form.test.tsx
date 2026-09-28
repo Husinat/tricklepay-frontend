@@ -150,7 +150,7 @@ describe("useCreateStreamForm", () => {
     });
 
     // A test asserts the displayed value matches what was entered
-    expect(latest.fields.amount).toBe("12.5");
+    expect(latest.values.amount).toBe("12.5");
 
     // A test asserts a decimal amount converts to the expected base units (7 decimals)
     expect(latest.prepared?.totalAmount).toBe(125000000n);
